@@ -1,5 +1,6 @@
 const { expo } = require('./app.json');
 const APP_ENV = process.env.EXPO_PUBLIC_APP_ENV || 'development';
+const EAS_PROJECT_ID = process.env.EXPO_PUBLIC_EAS_PROJECT_ID || '6a7a79c0-43fa-4efd-8fbc-c0240dac2603';
 
 const suffixMap = {
   development: ' Dev',
@@ -30,11 +31,11 @@ module.exports = () => ({
   extra: {
     appEnv: APP_ENV,
     eas: {
-      projectId: process.env.EXPO_PUBLIC_EAS_PROJECT_ID,
+      projectId: EAS_PROJECT_ID,
     },
   },
   updates: {
-    url: `https://u.expo.dev/${process.env.EXPO_PUBLIC_EAS_PROJECT_ID}`,
+    url: `https://u.expo.dev/${EAS_PROJECT_ID}`,
   },
   runtimeVersion: {
     policy: 'appVersion',
