@@ -10,7 +10,6 @@ node_modules/
 dist/
 web-build/
 expo-env.d.ts
-*.production.exp
 
 # --- Native builds ---
 /android/.gradle
@@ -18,12 +17,6 @@ expo-env.d.ts
 /android/build/
 /ios/Pods/
 /ios/build/
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-*.orig.*
 .kotlin/
 
 # --- Metro ---
@@ -70,6 +63,14 @@ Desktop.ini
 /ios
 /android
 *.jsbundle
+
+# --- EAS Build ---
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
 
 # --- Firebase ---
 *.firebase-service-account.json

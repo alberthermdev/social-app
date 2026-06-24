@@ -39,6 +39,24 @@ Copy `.env.example` to `.env` and fill in the values:
 cp .env.example .env
 ```
 
+## EAS Build
+
+Build profiles defined in `eas.json`:
+
+| Profile       | App Name           | Bundle ID               | Distribution          |
+| ------------- | ------------------ | ----------------------- | --------------------- |
+| `development` | Social App Dev     | `com.socialapp.dev`     | Internal (dev client) |
+| `preview`     | Social App Staging | `com.socialapp.staging` | Internal (APK)        |
+| `production`  | Social App         | `com.socialapp`         | Store                 |
+
+Build commands:
+
+```bash
+eas build --profile development --platform all
+eas build --profile preview --platform android
+eas build --profile production --platform all
+```
+
 ## Expo
 
 Read the exact versioned docs at https://docs.expo.dev/versions/v56.0.0/ before writing any code.
