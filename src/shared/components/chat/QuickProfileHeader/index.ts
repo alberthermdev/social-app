@@ -1,0 +1,1 @@
+export { QuickProfileHeader } from './QuickProfileHeader';

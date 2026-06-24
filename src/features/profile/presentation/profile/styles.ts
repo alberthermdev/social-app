@@ -1,0 +1,59 @@
+import { StyleSheet } from 'react-native';
+import { spacing, fontSize, borderRadius } from '@/shared/theme/spacing';
+
+export const createStyles = (c: ReturnType<typeof import('@/shared/hooks/useTheme').useTheme>) =>
+  StyleSheet.create({
+    container: { flex: 1 },
+    scrollContent: { paddingBottom: spacing.xxxl },
+    menuSection: { marginTop: spacing.lg },
+    menuItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: spacing.md,
+      paddingHorizontal: spacing.lg,
+      backgroundColor: c.surface,
+      marginHorizontal: spacing.lg,
+      borderBottomWidth: 0.5,
+      borderBottomColor: c.border,
+    },
+    menuItemFirst: { borderTopLeftRadius: borderRadius.lg, borderTopRightRadius: borderRadius.lg },
+    menuItemLast: {
+      borderBottomLeftRadius: borderRadius.lg,
+      borderBottomRightRadius: borderRadius.lg,
+      borderBottomWidth: 0,
+    },
+    menuIcon: { width: 32, alignItems: 'center' },
+    menuLabel: { flex: 1, fontSize: fontSize.md, color: c.text, marginLeft: spacing.md },
+    separator: { height: spacing.lg },
+    statsSection: { marginTop: spacing.lg },
+    statsTitle: {
+      fontSize: fontSize.sm,
+      color: c.primary,
+      textTransform: 'uppercase',
+      letterSpacing: 1,
+      marginBottom: spacing.sm,
+      marginHorizontal: spacing.lg,
+    },
+    statsRow: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: spacing.lg, gap: spacing.sm },
+    statCard: {
+      width: '47%',
+      backgroundColor: c.surface,
+      borderRadius: borderRadius.lg,
+      padding: spacing.lg,
+      alignItems: 'center',
+      minHeight: 80,
+    },
+    statValue: { fontSize: fontSize.xxl, color: c.text, marginTop: spacing.xs },
+    statLabel: { fontSize: fontSize.xs, color: c.textSecondary, textAlign: 'center', marginTop: spacing.xs },
+    accountCard: {
+      backgroundColor: c.surface,
+      borderRadius: borderRadius.lg,
+      marginHorizontal: spacing.lg,
+      padding: spacing.lg,
+    },
+    accountLabel: { fontSize: fontSize.xs, color: c.textSecondary },
+    accountValue: { fontSize: fontSize.md, color: c.text, marginBottom: spacing.sm },
+    footer: { alignItems: 'center', paddingVertical: spacing.xxl },
+    footerText: { fontSize: fontSize.sm, color: c.textSecondary },
+    footerVersion: { fontSize: fontSize.xs, color: c.textTertiary, marginTop: spacing.xs },
+  });

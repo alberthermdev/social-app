@@ -1,41 +1,77 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
-# dependencies
+# --- Dependencies ---
 node_modules/
+.pnp
+.pnp.js
 
-# Expo
+# --- Expo ---
 .expo/
 dist/
 web-build/
 expo-env.d.ts
+*.production.exp
 
-# Native
-.kotlin/
-*.orig.*
+# --- Native builds ---
+/android/.gradle
+/android/app/build/
+/android/build/
+/ios/Pods/
+/ios/build/
 *.jks
 *.p8
 *.p12
 *.key
 *.mobileprovision
+*.orig.*
+.kotlin/
 
-# Metro
+# --- Metro ---
 .metro-health-check*
 
-# debug
+# --- Environment variables ---
+.env
+.env.development
+.env.production
+.env.test
+.env.local
+.env.development.local
+.env.production.local
+.env.test.local
+
+# --- Debug logs ---
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+*.log
 
-# macOS
+# --- TypeScript ---
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# --- macOS ---
 .DS_Store
 *.pem
 
-# local env files
-.env*.local
+# --- Windows ---
+Thumbs.db
+Desktop.ini
 
-# typescript
-*.tsbuildinfo
+# --- Editors / IDEs ---
+.vscode/launch.json
+.vscode/*.code-snippets
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-*
 
-# generated native folders
+# --- Generated files ---
 /ios
 /android
+*.jsbundle
+
+# --- Firebase ---
+*.firebase-service-account.json
+google-services.json
+GoogleService-Info.plist

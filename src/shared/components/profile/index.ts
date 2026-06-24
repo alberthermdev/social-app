@@ -1,0 +1,11 @@
+export { ProfileHeader } from '@/shared/components/profile/ProfileHeader';
+export { ProfileAvatarMenu } from '@/shared/components/profile/ProfileAvatar';
+export { SettingsCard, SettingsRow } from '@/shared/components/profile/SettingsCard';
+export { ThemeSelector } from '@/shared/components/profile/ThemeSelector';
+export { PrivacySettingsSection } from '@/shared/components/profile/PrivacySettingsSection';
+export { NotificationSettingsSection } from '@/shared/components/profile/NotificationSettingsSection';
+export { ChatPreferencesSection } from '@/shared/components/profile/ChatPreferencesSection';
+export { UserStatistics } from '@/shared/components/profile/UserStatistics';
+export { DangerZone } from '@/shared/components/profile/DangerZone';
+export { HelpSection } from '@/shared/components/profile/HelpSection';
+export { AboutSection } from '@/shared/components/profile/AboutSection';
