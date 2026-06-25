@@ -4,7 +4,7 @@ import { spacing, fontSize, borderRadius } from '@/shared/theme/spacing';
 export const createStyles = (c: ReturnType<typeof import('@/shared/hooks/useTheme').useTheme>) =>
   StyleSheet.create({
     container: { flex: 1 },
-    content: { paddingBottom: spacing.xxxl },
+    content: { paddingTop: spacing.lg, paddingBottom: spacing.xxxl },
     chipRow: { flexDirection: 'row', padding: spacing.md, gap: spacing.sm },
     chip: {
       flex: 1,

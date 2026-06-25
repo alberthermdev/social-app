@@ -23,7 +23,7 @@ export function QuickProfileHeader({ onThemeToggle }: QuickProfileHeaderProps) {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.profile} onPress={() => navigation.navigate('ProfileTab')}>
+      <TouchableOpacity style={styles.profile} onPress={() => navigation.navigate('Profile')}>
         <Avatar photoURL={user?.photoURL} name={user?.name} size="sm" online={user?.online} showStatus />
         <View style={styles.info}>
           <AppText style={styles.name} weight="semiBold" numberOfLines={1}>

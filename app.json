@@ -27,11 +27,24 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.socialapp.dev",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/my-icon.png"
     },
-    "plugins": ["expo-localization", "expo-splash-screen", "expo-font"]
+    "plugins": [
+      "expo-localization",
+      "expo-splash-screen",
+      "expo-font",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#5865F2"
+        }
+      ]
+    ]
   }
 }

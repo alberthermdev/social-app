@@ -80,6 +80,8 @@
     "noPinned": "Sin chats fijados",
     "noArchived": "Sin chats archivados",
     "noResults": "Sin resultados",
+    "markAllRead": "Marcar todo como leído",
+    "noNotifications": "Sin notificaciones",
     "recent": "Recientes"
   },
   "contacts": {
@@ -164,6 +166,7 @@
     "terms": "Términos y condiciones",
     "saveChanges": "Guardar cambios",
     "logout": "Cerrar sesión",
+    "logoutConfirm": "¿Estás seguro de que quieres cerrar sesión?",
     "photoNote": "Próximamente: subir foto",
     "success": "Éxito",
     "profileUpdated": "Perfil actualizado",
@@ -210,6 +213,7 @@
     "justNow": "ahora",
     "minutes": "hace {{count}} min",
     "hours": "hace {{count}} h",
+    "today": "Hoy",
     "yesterday": "ayer",
     "days": "hace {{count}} días",
     "weeks": "hace {{count}} sem",

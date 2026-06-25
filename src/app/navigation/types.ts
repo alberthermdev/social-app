@@ -24,5 +24,6 @@ export type MainTabParamList = {
 
 export type MainStackParamList = {
   ChatList: undefined;
-  ChatDetail: { chatId: string };
+  ChatDetail: { chatId: string; otherUserName?: string; otherUserPhoto?: string | null; otherUserOnline?: boolean };
+  NotificationsList: undefined;
 };

@@ -80,6 +80,8 @@
     "noPinned": "No pinned chats",
     "noArchived": "No archived chats",
     "noResults": "No results found",
+    "markAllRead": "Mark all as read",
+    "noNotifications": "No notifications yet",
     "recent": "Recent"
   },
   "contacts": {
@@ -164,6 +166,7 @@
     "terms": "Terms & Conditions",
     "saveChanges": "Save Changes",
     "logout": "Log Out",
+    "logoutConfirm": "Are you sure you want to log out?",
     "photoNote": "Avatar upload coming soon",
     "success": "Success",
     "profileUpdated": "Profile updated",
@@ -210,6 +213,7 @@
     "justNow": "just now",
     "minutes": "{{count}} min ago",
     "hours": "{{count}}h ago",
+    "today": "Today",
     "yesterday": "yesterday",
     "days": "{{count}}d ago",
     "weeks": "{{count}}w ago",

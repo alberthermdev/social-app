@@ -5,7 +5,7 @@ import { spacing, fontSize, borderRadius } from '@/shared/theme/spacing';
 export const createStyles = (c: ThemeColors, isOwn: boolean) =>
   StyleSheet.create({
     container: {
-      marginVertical: spacing.xs,
+      marginVertical: 2,
       flexDirection: 'row',
     },
     ownContainer: { justifyContent: 'flex-end' },
@@ -24,11 +24,20 @@ export const createStyles = (c: ThemeColors, isOwn: boolean) =>
       backgroundColor: c.incomingBubble,
       borderBottomLeftRadius: borderRadius.sm,
     },
+    senderName: {
+      fontSize: fontSize.xs,
+      color: c.primary,
+      marginBottom: 2,
+    },
     text: { fontSize: fontSize.md, lineHeight: 20, color: isOwn ? '#FFFFFF' : c.text },
+    footer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+      marginTop: spacing.xs,
+    },
     time: {
       fontSize: fontSize.xs,
-      marginTop: spacing.xs,
-      alignSelf: 'flex-end',
       color: isOwn ? 'rgba(255,255,255,0.7)' : c.textSecondary,
     },
   });

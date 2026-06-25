@@ -13,6 +13,7 @@ import { RegisterScreen } from '@/features/auth/presentation/RegisterScreen';
 import { ForgotPasswordScreen } from '@/features/auth/presentation/ForgotPasswordScreen';
 import { ChatsListScreen } from '@/features/chats/presentation/ChatsListScreen';
 import { ChatScreen } from '@/features/messages/presentation/ChatScreen';
+import { NotificationsListScreen } from '@/features/notifications/presentation/NotificationsListScreen';
 import { ContactsScreen } from '@/features/contacts/presentation/ContactsScreen';
 import { ProfileScreen } from '@/features/profile/presentation/profile';
 import { EditProfileScreen } from '@/features/profile/presentation/edit-profile';
@@ -122,7 +123,11 @@ function MainTabs() {
         tabBarStyle: { backgroundColor: palette.tabBar, borderTopColor: palette.border },
       })}
     >
-      <MainTab.Screen name="Chats" component={ChatsListScreen} options={{ title: t('chats.title') }} />
+      <MainTab.Screen
+        name="Chats"
+        component={ChatsListScreen}
+        options={{ title: t('chats.title'), headerShown: false }}
+      />
       <MainTab.Screen name="Contacts" component={ContactsScreen} options={{ title: t('contacts.title') }} />
       <MainTab.Screen
         name="Profile"
@@ -146,12 +151,16 @@ function MainNavigator() {
     >
       <MainStack.Screen name="ChatList" component={MainTabs} options={{ headerShown: false }} />
       <MainStack.Screen name="ChatDetail" component={ChatScreen} options={{ title: t('chat.title') }} />
+      <MainStack.Screen name="NotificationsList" component={NotificationsListScreen} options={{ headerShown: false }} />
     </MainStack.Navigator>
   );
 }
 
 export function AppNavigator() {
-  const { user, loading, useCases, setUser } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
+  const loading = useAuthStore((s) => s.loading);
+  const useCases = useAuthStore((s) => s.useCases);
+  const setUser = useAuthStore((s) => s.setUser);
   const isDark = useIsDark();
 
   useEffect(() => {

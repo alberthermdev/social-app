@@ -1,13 +1,16 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { View, FlatList, StyleSheet, RefreshControl } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAuthStore } from '@/app/stores/authStore';
 import { useChatsStore, getFilteredChats } from '@/app/stores/chatsStore';
+import type { ChatWithUser } from '@/features/chats/domain/entities';
 import { useOnlineStatus } from '@/shared/hooks/useOnlineStatus';
 import { useConnectivity } from '@/shared/hooks/useConnectivity';
 import { useTheme } from '@/shared/hooks/useTheme';
-import { MainStackParamList } from '@/app/navigation/types';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { CompositeNavigationProp } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { MainStackParamList, MainTabParamList } from '@/app/navigation/types';
 import {
   HomeHeader,
   SearchBar,
@@ -23,7 +26,10 @@ import { ConnectivityBanner } from '@/shared/components/feedback/ConnectivityBan
 import { ErrorView } from '@/shared/components/feedback/ErrorView';
 
 type Props = {
-  navigation: NativeStackNavigationProp<MainStackParamList, 'ChatList'>;
+  navigation: CompositeNavigationProp<
+    BottomTabNavigationProp<MainTabParamList, 'Chats'>,
+    NativeStackNavigationProp<MainStackParamList>
+  >;
 };
 
 export function ChatsListScreen({ navigation }: Props) {
@@ -67,14 +73,23 @@ export function ChatsListScreen({ navigation }: Props) {
   );
 
   const handleChatPress = useCallback(
-    (chatId: string) => {
-      navigation.navigate('ChatDetail', { chatId });
+    (chat: ChatWithUser) => {
+      navigation.navigate('ChatDetail', {
+        chatId: chat.id,
+        otherUserName: chat.otherUserName,
+        otherUserPhoto: chat.otherUserPhoto,
+        otherUserOnline: chat.otherUserOnline,
+      });
     },
     [navigation],
   );
 
   const handleProfilePress = useCallback(() => {
-    (navigation as NativeStackNavigationProp<MainStackParamList, 'ChatList'>).getParent()?.navigate('Profile');
+    navigation.navigate('Profile');
+  }, [navigation]);
+
+  const handleNotificationPress = useCallback(() => {
+    navigation.navigate('NotificationsList');
   }, [navigation]);
 
   const handleNewChat = useCallback(() => {
@@ -84,15 +99,18 @@ export function ChatsListScreen({ navigation }: Props) {
   const handleRetry = useCallback(() => {
     clearError();
     if (!user?.id) return;
-    const unsub = subscribe(user.id);
-    return () => unsub();
+    subscribe(user.id);
   }, [user?.id, subscribe, clearError]);
 
   const headerComponent = useMemo(
     () => (
       <>
         {!isConnected && <ConnectivityBanner />}
-        <HomeHeader onAvatarPress={handleProfilePress} onSettingsPress={handleProfilePress} onSearchPress={() => {}} />
+        <HomeHeader
+          onAvatarPress={handleProfilePress}
+          onSettingsPress={handleProfilePress}
+          onNotificationPress={handleNotificationPress}
+        />
         <SearchBar onChatPress={handleChatPress} />
         <FilterChips />
         {pinnedChats.length > 0 && (
@@ -100,14 +118,18 @@ export function ChatsListScreen({ navigation }: Props) {
         )}
       </>
     ),
-    [isConnected, pinnedChats, currentUserId, handleChatPress, handleProfilePress],
+    [isConnected, pinnedChats, currentUserId, handleChatPress, handleProfilePress, handleNotificationPress],
   );
 
   if (loading) {
     return (
       <View style={[styles.container, { backgroundColor: c.background }]}>
         <ConnectivityBanner />
-        <HomeHeader onAvatarPress={handleProfilePress} onSettingsPress={handleProfilePress} onSearchPress={() => {}} />
+        <HomeHeader
+          onAvatarPress={handleProfilePress}
+          onSettingsPress={handleProfilePress}
+          onNotificationPress={handleNotificationPress}
+        />
         <ChatsSkeleton />
       </View>
     );
@@ -117,7 +139,11 @@ export function ChatsListScreen({ navigation }: Props) {
     return (
       <View style={[styles.container, { backgroundColor: c.background }]}>
         <ConnectivityBanner />
-        <HomeHeader onAvatarPress={handleProfilePress} onSettingsPress={handleProfilePress} onSearchPress={() => {}} />
+        <HomeHeader
+          onAvatarPress={handleProfilePress}
+          onSettingsPress={handleProfilePress}
+          onNotificationPress={handleNotificationPress}
+        />
         <ErrorView message={t('common.error')} onRetry={handleRetry} />
       </View>
     );

@@ -7,12 +7,13 @@ import { useChatsStore, getFilteredChats } from '@/app/stores/chatsStore';
 import { useAuthStore } from '@/app/stores/authStore';
 import { Avatar } from '@/shared/components/ui/Avatar';
 import { AppText } from '@/shared/components/ui/AppText';
+import type { ChatWithUser } from '@/features/chats/domain/entities';
 import { spacing } from '@/shared/theme/spacing';
 import { DEBOUNCE_MS } from '@/shared/constants';
 import { styles } from './styles';
 
 interface SearchBarProps {
-  onChatPress: (chatId: string) => void;
+  onChatPress: (chat: ChatWithUser) => void;
 }
 
 export function SearchBar({ onChatPress }: SearchBarProps) {
@@ -44,13 +45,13 @@ export function SearchBar({ onChatPress }: SearchBarProps) {
   const searchResults = localQuery.trim() ? getFilteredChats(chats, 'all', user?.id || '', localQuery) : [];
 
   const handleSelect = useCallback(
-    (chatId: string) => {
+    (chat: ChatWithUser) => {
       if (localQuery.trim()) addRecentSearch(localQuery.trim());
       setLocalQuery('');
       setSearchQuery('');
       setFocused(false);
       inputRef.current?.blur();
-      onChatPress(chatId);
+      onChatPress(chat);
     },
     [localQuery, addRecentSearch, setSearchQuery, onChatPress],
   );
@@ -109,7 +110,7 @@ export function SearchBar({ onChatPress }: SearchBarProps) {
             data={searchResults.slice(0, 5)}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <TouchableOpacity style={styles.resultItem} onPress={() => handleSelect(item.id)}>
+              <TouchableOpacity style={styles.resultItem} onPress={() => handleSelect(item)}>
                 <Avatar photoURL={item.otherUserPhoto} name={item.otherUserName} size="sm" />
                 <View style={styles.resultInfo}>
                   <AppText style={[styles.resultName, { color: c.text }]} numberOfLines={1}>
