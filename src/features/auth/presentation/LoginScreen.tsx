@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { View, StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { useMemo, useState } from 'react';
+import { View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { AppText } from '@/shared/components/ui/AppText';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,6 +11,7 @@ import { Button } from '@/shared/components/ui/Button';
 import { loginSchema, LoginFormData } from '@/shared/utils/validators';
 import { useAuthStore } from '@/app/stores/authStore';
 import { useTheme } from '@/shared/hooks/useTheme';
+import { ConfirmModal } from '@/shared/components/feedback';
 import { spacing, fontSize, fontFamily } from '@/shared/theme/spacing';
 import { AuthStackParamList } from '@/app/navigation/types';
 
@@ -21,7 +22,8 @@ type Props = {
 export function LoginScreen({ navigation }: Props) {
   const { t } = useTranslation();
   const c = useTheme();
-  const { useCases } = useAuthStore();
+  const useCases = useAuthStore((s) => s.useCases);
+  const [alert, setAlert] = useState<{ title: string; message: string } | null>(null);
   const {
     control,
     handleSubmit,
@@ -38,8 +40,7 @@ export function LoginScreen({ navigation }: Props) {
         safeArea: { flex: 1 },
         scrollContent: { flexGrow: 1, justifyContent: 'center', padding: spacing.xxl },
         header: { alignItems: 'center', marginBottom: spacing.xxxl },
-        appName: { fontSize: fontSize.xxl, fontFamily: fontFamily.bold, color: c.primary, marginBottom: spacing.sm },
-        subtitle: { fontSize: fontSize.md, color: c.textSecondary },
+        subtitle: { fontSize: fontSize.lg, color: c.text, fontFamily: fontFamily.bold },
         loginButton: { marginTop: spacing.sm },
         forgotButton: { marginTop: spacing.sm, alignSelf: 'center' },
         footer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: spacing.xxl },
@@ -53,7 +54,7 @@ export function LoginScreen({ navigation }: Props) {
       const user = await useCases.login(data);
       useAuthStore.getState().setUser(user);
     } catch (error) {
-      Alert.alert(t('auth.loginFailed'), (error as Error).message);
+      setAlert({ title: t('auth.loginFailed'), message: (error as Error).message });
     }
   };
 
@@ -66,7 +67,6 @@ export function LoginScreen({ navigation }: Props) {
       <SafeAreaView edges={['top', 'bottom']} style={styles.safeArea}>
         <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
           <View style={styles.header}>
-            <AppText style={styles.appName}>{t('app.name')}</AppText>
             <AppText style={styles.subtitle}>{t('auth.welcomeBack')}</AppText>
           </View>
 
@@ -128,6 +128,8 @@ export function LoginScreen({ navigation }: Props) {
           </View>
         </ScrollView>
       </SafeAreaView>
+
+      <ConfirmModal visible={!!alert} title={alert?.title} message={alert?.message} onDismiss={() => setAlert(null)} />
     </KeyboardAvoidingView>
   );
 }

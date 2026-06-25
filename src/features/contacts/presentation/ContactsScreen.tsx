@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { View, FlatList, StyleSheet, TouchableOpacity, RefreshControl, Alert } from 'react-native';
+import { View, FlatList, StyleSheet, TouchableOpacity, RefreshControl } from 'react-native';
 import { AppText } from '@/shared/components/ui/AppText';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
@@ -13,6 +13,7 @@ import { useTheme } from '@/shared/hooks/useTheme';
 import { Avatar } from '@/shared/components/ui/Avatar';
 import { EmptyState } from '@/shared/components/feedback/EmptyState';
 import { LoadingScreen } from '@/shared/components/feedback/LoadingScreen';
+import { ConfirmModal } from '@/shared/components/feedback';
 import { Input } from '@/shared/components/ui/Input';
 import { spacing, fontSize, fontFamily } from '@/shared/theme/spacing';
 import { MainStackParamList } from '@/app/navigation/types';
@@ -20,12 +21,13 @@ import { MainStackParamList } from '@/app/navigation/types';
 export function ContactsScreen() {
   const { t } = useTranslation();
   const c = useTheme();
-  const { user } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
   const navigation = useNavigation<NativeStackNavigationProp<MainStackParamList>>();
   const [contacts, setContacts] = useState<ContactUser[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [alert, setAlert] = useState<{ title: string; message: string } | null>(null);
 
   const styles = useMemo(
     () =>
@@ -71,7 +73,7 @@ export function ContactsScreen() {
       const chatId = await FirestoreChatRepository.getOrCreateChat(user.id, contactId);
       navigation.navigate('ChatDetail', { chatId });
     } catch (e) {
-      Alert.alert('Error', (e as Error).message);
+      setAlert({ title: 'Error', message: (e as Error).message });
     }
   };
 
@@ -124,6 +126,8 @@ export function ContactsScreen() {
         }
         contentContainerStyle={filteredContacts.length === 0 ? styles.emptyList : undefined}
       />
+
+      <ConfirmModal visible={!!alert} title={alert?.title} message={alert?.message} onDismiss={() => setAlert(null)} />
     </SafeAreaView>
   );
 }

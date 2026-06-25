@@ -73,8 +73,14 @@ function PickerModal({
 export function PrivacySettingsSection() {
   const { t } = useTranslation();
   const c = useTheme();
-  const { lastSeen, profilePhoto, about, readReceipts, setLastSeen, setProfilePhoto, setAbout, setReadReceipts } =
-    usePrivacyStore();
+  const lastSeen = usePrivacyStore((s) => s.lastSeen);
+  const profilePhoto = usePrivacyStore((s) => s.profilePhoto);
+  const about = usePrivacyStore((s) => s.about);
+  const readReceipts = usePrivacyStore((s) => s.readReceipts);
+  const setLastSeen = usePrivacyStore((s) => s.setLastSeen);
+  const setProfilePhoto = usePrivacyStore((s) => s.setProfilePhoto);
+  const setAbout = usePrivacyStore((s) => s.setAbout);
+  const setReadReceipts = usePrivacyStore((s) => s.setReadReceipts);
   const [picker, setPicker] = useState<{ field: string; title: string; value: string } | null>(null);
   const options = ['everyone', 'contacts', 'nobody'];
 

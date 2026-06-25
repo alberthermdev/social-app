@@ -4,7 +4,7 @@ import { spacing, fontSize, borderRadius } from '@/shared/theme/spacing';
 export const createStyles = (c: ReturnType<typeof import('@/shared/hooks/useTheme').useTheme>) =>
   StyleSheet.create({
     container: { flex: 1 },
-    scrollContent: { paddingBottom: spacing.xxxl },
+    scrollContent: { paddingTop: spacing.lg, paddingBottom: spacing.xxxl },
     avatarSection: { alignItems: 'center', paddingVertical: spacing.xl },
     input: {
       borderWidth: 1,

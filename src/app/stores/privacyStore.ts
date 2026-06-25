@@ -49,6 +49,13 @@ export const usePrivacyStore = create<PrivacyState>()(
     {
       name: 'centri-privacy',
       storage: createJSONStorage(() => ReactNativeAsyncStorage),
+      partialize: (state) => ({
+        lastSeen: state.lastSeen,
+        profilePhoto: state.profilePhoto,
+        about: state.about,
+        readReceipts: state.readReceipts,
+        blockedUsers: state.blockedUsers,
+      }),
     },
   ),
 );

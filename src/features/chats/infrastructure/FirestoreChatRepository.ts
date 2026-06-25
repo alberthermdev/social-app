@@ -127,17 +127,23 @@ export const FirestoreChatRepository: IChatRepository = {
     });
   },
 
-  subscribeToChats: (userId: string, callback: (chats: Chat[]) => void) => {
+  subscribeToChats: (userId: string, callback: (chats: Chat[]) => void, onError?: (error: Error) => void) => {
     const db = getFirestoreDb();
     const q = query(
       collection(db, COLLECTIONS.CHATS),
       where('participants', 'array-contains', userId),
       orderBy('lastMessageAt', 'desc'),
     );
-    return onSnapshot(q, (snapshot) => {
-      const chats = snapshot.docs.map(mapDocToChat);
-      callback(chats);
-    });
+    return onSnapshot(
+      q,
+      (snapshot) => {
+        const chats = snapshot.docs.map(mapDocToChat);
+        callback(chats);
+      },
+      (error) => {
+        if (onError) onError(error);
+      },
+    );
   },
 
   togglePinned: async (chatId: string, userId: string): Promise<void> => {

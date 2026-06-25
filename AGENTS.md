@@ -43,18 +43,20 @@ cp .env.example .env
 
 Build profiles defined in `eas.json`:
 
-| Profile       | App Name           | Bundle ID               | Distribution          |
-| ------------- | ------------------ | ----------------------- | --------------------- |
-| `development` | Social App Dev     | `com.socialapp.dev`     | Internal (dev client) |
-| `preview`     | Social App Staging | `com.socialapp.staging` | Internal (APK)        |
-| `production`  | Social App         | `com.socialapp`         | Store                 |
+| Profile           | App Name           | Bundle ID               | Distribution          |
+| ----------------- | ------------------ | ----------------------- | --------------------- |
+| `development`     | Social App Dev     | `com.socialapp.dev`     | Internal (dev client) |
+| `development-apk` | Social App Dev     | `com.socialapp.dev`     | Internal (APK)        |
+| `preview`         | Social App Staging | `com.socialapp.staging` | Internal (APK)        |
+| `production`      | Social App         | `com.socialapp`         | Store                 |
 
 Build commands:
 
 ```bash
-eas build --profile development --platform all
-eas build --profile preview --platform android
-eas build --profile production --platform all
+eas build --profile development --platform android          # dev client (needs npm start)
+eas build --profile development-apk --platform android      # standalone APK (development)
+eas build --profile preview --platform android              # standalone APK (staging)
+eas build --profile production --platform android           # production AAB
 ```
 
 ## Expo

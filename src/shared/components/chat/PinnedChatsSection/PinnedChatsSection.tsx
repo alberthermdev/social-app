@@ -10,7 +10,7 @@ import { styles } from './styles';
 interface PinnedChatsSectionProps {
   chats: ChatWithUser[];
   currentUserId: string;
-  onChatPress: (chatId: string) => void;
+  onChatPress: (chat: ChatWithUser) => void;
 }
 
 export function PinnedChatsSection({ chats, currentUserId, onChatPress }: PinnedChatsSectionProps) {

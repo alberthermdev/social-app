@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { ScrollView, View, RefreshControl, TouchableOpacity, Alert } from 'react-native';
+import { ScrollView, View, RefreshControl, TouchableOpacity } from 'react-native';
 import { AppText } from '@/shared/components/ui/AppText';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +10,7 @@ import { useAuthStore } from '@/app/stores/authStore';
 import { useTheme } from '@/shared/hooks/useTheme';
 import { FirestoreProfileRepository } from '@/features/profile/infrastructure/FirestoreProfileRepository';
 import { ProfileHeader, ProfileAvatarMenu } from '@/shared/components/profile';
+import { SkeletonLoader, ConfirmModal } from '@/shared/components/feedback';
 import * as ImagePicker from 'expo-image-picker';
 import { ProfileStackParamList } from '@/app/navigation/types';
 import { createStyles } from './styles';
@@ -27,10 +28,17 @@ export function ProfileScreen() {
   const { t } = useTranslation();
   const c = useTheme();
   const navigation = useNavigation<Nav>();
-  const { user, setUser } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
+  const setUser = useAuthStore((s) => s.setUser);
   const [avatarMenuVisible, setAvatarMenuVisible] = useState(false);
   const [stats, setStats] = useState<{ label: string; value: string | number; icon: string }[]>([]);
+  const [statsLoading, setStatsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [alert, setAlert] = useState<{
+    title: string;
+    message: string;
+    buttons?: { text: string; onPress?: () => void; style?: 'cancel' | 'destructive' | 'default' }[];
+  } | null>(null);
   const styles = useMemo(() => createStyles(c), [c]);
 
   const menuItems: MenuItem[] = useMemo(
@@ -47,8 +55,29 @@ export function ProfileScreen() {
     [t],
   );
 
+  const handleLogout = () => {
+    setAlert({
+      title: t('profile.logout'),
+      message: t('profile.logoutConfirm'),
+      buttons: [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('profile.logout'),
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await useAuthStore.getState().useCases.logout();
+            } catch {}
+            useAuthStore.getState().reset();
+          },
+        },
+      ],
+    });
+  };
+
   const loadStats = useCallback(async () => {
     if (!user) return;
+    setStatsLoading(true);
     try {
       const userStats = await FirestoreProfileRepository.getUserStats(user.id);
       if (userStats) {
@@ -62,6 +91,7 @@ export function ProfileScreen() {
         ]);
       }
     } catch {}
+    setStatsLoading(false);
   }, [user, t]);
 
   useEffect(() => {
@@ -86,7 +116,7 @@ export function ProfileScreen() {
         const url = await FirestoreProfileRepository.uploadAvatar(user.id, result.assets[0].uri);
         setUser({ ...user, photoURL: url });
       } catch {
-        Alert.alert('Error', 'Failed to upload avatar');
+        setAlert({ title: 'Error', message: 'Failed to upload avatar' });
       }
     }
   };
@@ -104,7 +134,7 @@ export function ProfileScreen() {
         const url = await FirestoreProfileRepository.uploadAvatar(user.id, result.assets[0].uri);
         setUser({ ...user, photoURL: url });
       } catch {
-        Alert.alert('Error', 'Failed to upload avatar');
+        setAlert({ title: 'Error', message: 'Failed to upload avatar' });
       }
     }
   };
@@ -116,7 +146,7 @@ export function ProfileScreen() {
       await FirestoreProfileRepository.deleteAvatar(user.id);
       setUser({ ...user, photoURL: null });
     } catch {
-      Alert.alert('Error', 'Failed to delete avatar');
+      setAlert({ title: 'Error', message: 'Failed to delete avatar' });
     }
   };
 
@@ -150,6 +180,14 @@ export function ProfileScreen() {
           onClose={() => setAvatarMenuVisible(false)}
         />
 
+        <ConfirmModal
+          visible={!!alert}
+          title={alert?.title}
+          message={alert?.message}
+          buttons={alert?.buttons}
+          onDismiss={() => setAlert(null)}
+        />
+
         {user && (
           <View style={styles.accountCard}>
             <AppText style={styles.accountLabel}>{t('profile.email')}</AppText>
@@ -161,7 +199,21 @@ export function ProfileScreen() {
           </View>
         )}
 
-        {stats.length > 0 && (
+        {statsLoading ? (
+          <View style={styles.statsSection}>
+            <AppText style={styles.statsTitle} weight="bold">
+              {t('profile.stats')}
+            </AppText>
+            <View style={styles.statsRow}>
+              {Array.from({ length: 6 }).map((_, i) => (
+                <View key={i} style={styles.statCard}>
+                  <SkeletonLoader height={12} style={{ width: '70%', marginBottom: 8 }} />
+                  <SkeletonLoader height={24} style={{ width: '40%' }} />
+                </View>
+              ))}
+            </View>
+          </View>
+        ) : stats.length > 0 ? (
           <View style={styles.statsSection}>
             <AppText style={styles.statsTitle} weight="bold">
               {t('profile.stats')}
@@ -177,7 +229,7 @@ export function ProfileScreen() {
               ))}
             </View>
           </View>
-        )}
+        ) : null}
 
         <View style={styles.menuSection}>
           {menuItems.map((item, index) => (
@@ -200,10 +252,14 @@ export function ProfileScreen() {
           ))}
         </View>
 
+        <View style={styles.logoutSection}>
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout} activeOpacity={0.7}>
+            <Ionicons name="log-out-outline" size={22} color={c.error} />
+            <AppText style={styles.logoutLabel}>{t('profile.logout')}</AppText>
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.footer}>
-          <AppText style={styles.footerText} weight="bold">
-            Centri Social
-          </AppText>
           <AppText style={styles.footerVersion}>1.0.0 Build 1</AppText>
         </View>
       </ScrollView>

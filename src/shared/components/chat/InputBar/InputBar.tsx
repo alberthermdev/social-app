@@ -26,6 +26,9 @@ export function InputBar({ onSend, sending }: InputBarProps) {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.attachButton} activeOpacity={0.7}>
+        <Ionicons name="add-circle-outline" size={24} color={c.textSecondary} />
+      </TouchableOpacity>
       <TextInput
         style={styles.input}
         placeholder={t('chat.messagePlaceholder')}
@@ -40,6 +43,7 @@ export function InputBar({ onSend, sending }: InputBarProps) {
         style={[styles.sendButton, (!text.trim() || sending) && styles.sendButtonDisabled]}
         onPress={handleSend}
         disabled={!text.trim() || sending}
+        activeOpacity={0.7}
       >
         <Ionicons name="send" size={18} color="#FFFFFF" />
       </TouchableOpacity>

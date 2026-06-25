@@ -11,7 +11,12 @@ import { createStyles } from './styles';
 export function ThemeSelector() {
   const { t } = useTranslation();
   const c = useTheme();
-  const { theme, textSize, reducedAnimations, setTheme, setTextSize, setReducedAnimations } = useSettingsStore();
+  const theme = useSettingsStore((s) => s.theme);
+  const textSize = useSettingsStore((s) => s.textSize);
+  const reducedAnimations = useSettingsStore((s) => s.reducedAnimations);
+  const setTheme = useSettingsStore((s) => s.setTheme);
+  const setTextSize = useSettingsStore((s) => s.setTextSize);
+  const setReducedAnimations = useSettingsStore((s) => s.setReducedAnimations);
   const styles = useMemo(() => createStyles(c), [c]);
 
   const themes: { key: ThemeMode; label: string; icon: keyof typeof Ionicons.glyphMap }[] = [

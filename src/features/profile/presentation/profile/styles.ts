@@ -4,7 +4,7 @@ import { spacing, fontSize, borderRadius } from '@/shared/theme/spacing';
 export const createStyles = (c: ReturnType<typeof import('@/shared/hooks/useTheme').useTheme>) =>
   StyleSheet.create({
     container: { flex: 1 },
-    scrollContent: { paddingBottom: spacing.xxxl },
+    scrollContent: { paddingTop: spacing.lg, paddingBottom: spacing.xxxl },
     menuSection: { marginTop: spacing.lg },
     menuItem: {
       flexDirection: 'row',
@@ -53,7 +53,18 @@ export const createStyles = (c: ReturnType<typeof import('@/shared/hooks/useThem
     },
     accountLabel: { fontSize: fontSize.xs, color: c.textSecondary },
     accountValue: { fontSize: fontSize.md, color: c.text, marginBottom: spacing.sm },
+    logoutSection: { marginTop: spacing.xxl, paddingHorizontal: spacing.lg },
+    logoutButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: spacing.md,
+      backgroundColor: c.surface,
+      borderRadius: borderRadius.lg,
+      borderWidth: 1,
+      borderColor: c.error,
+    },
+    logoutLabel: { fontSize: fontSize.md, color: c.error, marginLeft: spacing.sm, fontWeight: '600' },
     footer: { alignItems: 'center', paddingVertical: spacing.xxl },
-    footerText: { fontSize: fontSize.sm, color: c.textSecondary },
-    footerVersion: { fontSize: fontSize.xs, color: c.textTertiary, marginTop: spacing.xs },
+    footerVersion: { fontSize: fontSize.xs, color: c.textTertiary },
   });

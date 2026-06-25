@@ -71,6 +71,18 @@ export const useSettingsStore = create<SettingsState>()(
     {
       name: 'centri-settings',
       storage: createJSONStorage(() => ReactNativeAsyncStorage),
+      partialize: (state) => ({
+        theme: state.theme,
+        textSize: state.textSize,
+        reducedAnimations: state.reducedAnimations,
+        language: state.language,
+        enterToSend: state.enterToSend,
+        autoDownloadImages: state.autoDownloadImages,
+        autoDownloadVideos: state.autoDownloadVideos,
+        showTypingIndicators: state.showTypingIndicators,
+        showReadReceipts: state.showReadReceipts,
+        autoSaveMedia: state.autoSaveMedia,
+      }),
     },
   ),
 );

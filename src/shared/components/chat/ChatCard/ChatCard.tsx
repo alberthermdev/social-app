@@ -15,7 +15,7 @@ import { styles } from './styles';
 interface ChatCardProps {
   chat: ChatWithUser;
   currentUserId: string;
-  onPress: (chatId: string) => void;
+  onPress: (chat: ChatWithUser) => void;
 }
 
 function getMessagePreview(chat: ChatWithUser, currentUserId: string): { text: string; isSystem: boolean } {
@@ -57,8 +57,8 @@ function ChatCardInner({ chat, currentUserId, onPress }: ChatCardProps) {
 
   const handlePress = useCallback(() => {
     if (unread > 0) markAsRead(chat.id, currentUserId);
-    onPress(chat.id);
-  }, [chat.id, currentUserId, unread, markAsRead, onPress]);
+    onPress(chat);
+  }, [chat, currentUserId, unread, markAsRead, onPress]);
 
   const renderRightActions = () => (
     <View style={styles.swipeContainer}>

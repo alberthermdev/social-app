@@ -41,60 +41,79 @@ export const useChatsStore = create<ChatsState>((set, get) => ({
   unreadTotal: 0,
 
   subscribe: (userId: string) => {
-    const unsubscribe = FirestoreChatRepository.subscribeToChats(userId, async (chats) => {
-      try {
-        const enriched = await Promise.all(
-          chats.map(async (chat: Chat): Promise<ChatWithUser> => {
-            if (chat.isGroup) {
-              return {
-                ...chat,
-                otherUserName: chat.groupName || 'Grupo',
-                otherUserPhoto: chat.groupPhoto || null,
-                otherUserOnline: false,
-                otherUserLastSeen: 0,
-              };
-            }
-            const otherId = chat.participants.find((p) => p !== userId) || '';
-            try {
-              const user = await FirestoreContactRepository.getUserById(otherId);
-              return {
-                ...chat,
-                otherUserName: user?.name || 'Usuario',
-                otherUserPhoto: user?.photoURL || null,
-                otherUserOnline: user?.online || false,
-                otherUserLastSeen: user?.lastSeen || 0,
-              };
-            } catch {
-              return {
-                ...chat,
-                otherUserName: 'Usuario',
-                otherUserPhoto: null,
-                otherUserOnline: false,
-                otherUserLastSeen: 0,
-              };
-            }
-          }),
-        );
+    const loadingTimeout = setTimeout(() => {
+      set((s) => {
+        if (s.loading)
+          return { loading: false, error: 'Tiempo de espera agotado. Verifica tu conexión e índice de Firestore.' };
+        return {};
+      });
+    }, 15000);
 
-        const archivedCount = enriched.filter((c) => c.archivedBy.includes(userId)).length;
-        const unreadTotal = enriched.reduce((acc, c) => {
-          if (c.archivedBy.includes(userId)) return acc;
-          return acc + (c.unreadCount[userId] || 0);
-        }, 0);
+    const unsubscribe = FirestoreChatRepository.subscribeToChats(
+      userId,
+      async (chats) => {
+        clearTimeout(loadingTimeout);
+        try {
+          const enriched = await Promise.all(
+            chats.map(async (chat: Chat): Promise<ChatWithUser> => {
+              if (chat.isGroup) {
+                return {
+                  ...chat,
+                  otherUserName: chat.groupName || 'Grupo',
+                  otherUserPhoto: chat.groupPhoto || null,
+                  otherUserOnline: false,
+                  otherUserLastSeen: 0,
+                };
+              }
+              const otherId = chat.participants.find((p) => p !== userId) || '';
+              try {
+                const user = await FirestoreContactRepository.getUserById(otherId);
+                return {
+                  ...chat,
+                  otherUserName: user?.name || 'Usuario',
+                  otherUserPhoto: user?.photoURL || null,
+                  otherUserOnline: user?.online || false,
+                  otherUserLastSeen: user?.lastSeen || 0,
+                };
+              } catch {
+                return {
+                  ...chat,
+                  otherUserName: 'Usuario',
+                  otherUserPhoto: null,
+                  otherUserOnline: false,
+                  otherUserLastSeen: 0,
+                };
+              }
+            }),
+          );
 
+          set({
+            chats: enriched,
+            loading: false,
+            error: null,
+            archivedCount: enriched.filter((c) => c.archivedBy.includes(userId)).length,
+            unreadTotal: enriched.reduce((acc, c) => {
+              if (c.archivedBy.includes(userId)) return acc;
+              return acc + (c.unreadCount[userId] || 0);
+            }, 0),
+          });
+        } catch {
+          set({ error: 'Error al cargar chats', loading: false });
+        }
+      },
+      (error) => {
+        clearTimeout(loadingTimeout);
         set({
-          chats: enriched,
+          error: `Error de conexión: ${error.message}. Asegúrate de haber desplegado el índice compuesto de Firestore.`,
           loading: false,
-          error: null,
-          archivedCount,
-          unreadTotal,
         });
-      } catch {
-        set({ error: 'Failed to load chats', loading: false });
-      }
-    });
+      },
+    );
 
-    return unsubscribe;
+    return () => {
+      clearTimeout(loadingTimeout);
+      unsubscribe();
+    };
   },
 
   setActiveFilter: (filter) => set({ activeFilter: filter }),

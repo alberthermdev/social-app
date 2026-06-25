@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { View, StyleSheet, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { AppText } from '@/shared/components/ui/AppText';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,6 +11,7 @@ import { Button } from '@/shared/components/ui/Button';
 import { forgotPasswordSchema, ForgotPasswordFormData } from '@/shared/utils/validators';
 import { useAuthStore } from '@/app/stores/authStore';
 import { useTheme } from '@/shared/hooks/useTheme';
+import { ConfirmModal } from '@/shared/components/feedback';
 import { spacing, fontSize, fontFamily } from '@/shared/theme/spacing';
 import { AuthStackParamList } from '@/app/navigation/types';
 
@@ -21,7 +22,8 @@ type Props = {
 export function ForgotPasswordScreen({ navigation }: Props) {
   const { t } = useTranslation();
   const c = useTheme();
-  const { useCases } = useAuthStore();
+  const useCases = useAuthStore((s) => s.useCases);
+  const [alert, setAlert] = useState<{ title: string; message: string } | null>(null);
   const [sent, setSent] = useState(false);
   const {
     control,
@@ -55,9 +57,9 @@ export function ForgotPasswordScreen({ navigation }: Props) {
     try {
       await useCases.sendPasswordReset(data.email);
       setSent(true);
-      Alert.alert(t('auth.emailSent'), t('auth.emailSentMessage'));
+      setAlert({ title: t('auth.emailSent'), message: t('auth.emailSentMessage') });
     } catch (error) {
-      Alert.alert(t('auth.error'), (error as Error).message);
+      setAlert({ title: t('auth.error'), message: (error as Error).message });
     }
   };
 
@@ -104,6 +106,8 @@ export function ForgotPasswordScreen({ navigation }: Props) {
           />
         </View>
       </SafeAreaView>
+
+      <ConfirmModal visible={!!alert} title={alert?.title} message={alert?.message} onDismiss={() => setAlert(null)} />
     </KeyboardAvoidingView>
   );
 }

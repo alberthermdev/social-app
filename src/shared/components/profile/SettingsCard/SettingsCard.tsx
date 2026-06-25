@@ -1,5 +1,5 @@
 import { useMemo, PropsWithChildren } from 'react';
-import { View } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import { AppText } from '@/shared/components/ui/AppText';
 import { useTheme } from '@/shared/hooks/useTheme';
 import { createStyles, createRowStyles } from './styles';
@@ -31,11 +31,11 @@ interface SettingsRowProps {
   last?: boolean;
 }
 
-export function SettingsRow({ label, description, right, onPress: _onPress, last }: SettingsRowProps) {
+export function SettingsRow({ label, description, right, onPress, last }: SettingsRowProps) {
   const c = useTheme();
   const styles = useMemo(() => createRowStyles(c, !!last), [c, last]);
 
-  return (
+  const content = (
     <View style={styles.row}>
       <View style={styles.left}>
         <AppText style={styles.label} maxFontSizeMultiplier={1.3}>
@@ -50,4 +50,14 @@ export function SettingsRow({ label, description, right, onPress: _onPress, last
       {right}
     </View>
   );
+
+  if (onPress) {
+    return (
+      <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+        {content}
+      </TouchableOpacity>
+    );
+  }
+
+  return content;
 }

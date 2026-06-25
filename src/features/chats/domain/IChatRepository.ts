@@ -6,7 +6,7 @@ export interface IChatRepository {
   createChat(participants: string[]): Promise<string>;
   getOrCreateChat(userId1: string, userId2: string): Promise<string>;
   updateLastMessage(chatId: string, message: string, senderId: string): Promise<void>;
-  subscribeToChats(userId: string, callback: (chats: Chat[]) => void): () => void;
+  subscribeToChats(userId: string, callback: (chats: Chat[]) => void, onError?: (error: Error) => void): () => void;
 
   togglePinned(chatId: string, userId: string): Promise<void>;
   toggleMuted(chatId: string, userId: string): Promise<void>;
